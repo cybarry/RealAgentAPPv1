@@ -1,24 +1,10 @@
-import asyncHandler from "express-async-handler";
+import asyncHandler from 'express-async-handler';
 
-import { prisma } from "../config/prismaConfig.js";
+import { prisma } from '../config/prismaconfig.js';
+import expressAsyncHandler from 'express-async-handler';
 
 export const createResidency = asyncHandler(async (req, res) => {
-  const {
-    title,
-    description,
-    price,
-    address,
-    country,
-    city,
-    facilities,
-    image,
-    userEmail,
-  } = req.body.data;
-
-  console.log(req.body.data);
-  try {
-    const residency = await prisma.residency.create({
-      data: {
+    const {
         title,
         description,
         price,
@@ -27,39 +13,55 @@ export const createResidency = asyncHandler(async (req, res) => {
         city,
         facilities,
         image,
-        owner: { connect: { email: userEmail } },
-      },
-    });
+        userEmail
+    } = req.body.data
 
-    res.send({ message: "Residency created successfully", residency });
-  } catch (err) {
-    if (err.code === "P2002") {
-      throw new Error("A residency with address already there");
+    console.log(req.body.data)
+    try {
+        const residency = await prisma.residency.create({
+            data: {
+                title,
+                description,
+                price,
+                address,
+                country,
+                city,
+                facilities,
+                image,
+                owner: { connect: { email: userEmail } },
+            },
+        });
+
+        res.send({ message: "Residency created successfully", residency });
+    } catch (err) {
+        if (err.code === "P2002") {
+            throw new Error("A residency with address already there ")
+        }
+        throw new Error(err.message)
     }
-    throw new Error(err.message);
-  }
-});
 
-// function to get all the documents/residencies
+})
+
+//get all residencies
 export const getAllResidencies = asyncHandler(async (req, res) => {
-  const residencies = await prisma.residency.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-  res.send(residencies);
+    const residencies = await prisma.residency.findMany({
+        orderBy: {
+            createdAt: "desc",
+        },
+    });
+    res.send(residencies);
 });
 
-// function to get a specific document/residency
+//get a specific residency
 export const getResidency = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+    const { id } = req.params;
 
-  try {
-    const residency = await prisma.residency.findUnique({
-      where: { id },
-    });
-    res.send(residency);
-  } catch (err) {
-    throw new Error(err.message);
-  }
+    try {
+        const residency = await prisma.residency.findUnique({
+            where: { id },
+        });
+        res.send(residency);
+    } catch (err) {
+        throw new Error(err.message);
+    }
 });

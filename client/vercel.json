@@ -1,3 +1,7 @@
 {
     "rewrites": [{"source": "/(.*)", "destination": "/"}]
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> f6275dc4 (First Commits)

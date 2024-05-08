@@ -7,4 +7,3 @@ const jwtCheck = auth({
 })
 
 export default jwtCheck
-
